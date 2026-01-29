@@ -24,7 +24,6 @@ A Vue 3 + Pinia frontend for a Pilates Studio booking system, connected to a Lar
 1. Clone the backend repo:
 ```
 git clone https://github.com/deliapater/pilates-studio-backend.git
-cd <backend-folder>
 ```
 
 2. Install dependencies:
@@ -61,7 +60,7 @@ php artisan serve
 ### Frontend Setup (Vue 3 + Pinia)
 1. Clone the repository:
 ```
-git clone <repo-url>
+git clone git@github.com:deliapater/pilates-studio-frontend.git
 cd pilates-studio
 ```
 
