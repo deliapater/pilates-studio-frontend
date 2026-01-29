@@ -23,7 +23,7 @@ A Vue 3 + Pinia frontend for a Pilates Studio booking system, connected to a Lar
 ### Backend Setup (Laravel)
 1. Clone the backend repo:
 ```
-git clone <backend-repo-url>
+git clone https://github.com/deliapater/pilates-studio-backend.git
 cd <backend-folder>
 ```
 
