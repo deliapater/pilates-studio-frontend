@@ -31,7 +31,7 @@ git clone https://github.com/deliapater/pilates-studio-backend.git
 composer install
 ```
 
-3. Setup ypur `.env` file:
+3. Setup your `.env` file:
 ```
 cp .env.example .env
 php artisan key:generate
@@ -88,6 +88,7 @@ npm run dev
 ```
 npm run test
 ```
+
 Open your browser at http://localhost:5173 (or the URL provided by Vite).
 
 
