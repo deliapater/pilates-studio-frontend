@@ -57,6 +57,11 @@ php artisan migrate
 php artisan serve
 ```
 
+7. Run Unit tests:
+```
+php artisan test
+```
+
 ### Frontend Setup (Vue 3 + Pinia)
 1. Clone the repository:
 ```
@@ -77,6 +82,11 @@ VITE_API_URL=http://127.0.0.1:8000/api
 4. Run the development server:
 ```
 npm run dev
+```
+
+5. Run frontend tests:
+```
+npm run test
 ```
 Open your browser at http://localhost:5173 (or the URL provided by Vite).
 
