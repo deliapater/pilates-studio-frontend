@@ -4,7 +4,7 @@
         <div>
             <div v-for="cls in classesStore.classes" :key="cls.id">
 
-                <ClassCard v-if="cls" :className="cls.className" :instructor="cls.instructor" :time="cls.time"
+                <ClassCard v-if="cls" :className="cls.className" :instructor="cls.instructor" :day="cls.day" :time="cls.time"
                     :spots="cls.spots" :showSpots="true" />
                 <button v-if="userStore.userBookings.find(b => b.class_id === cls.id)"
                     @click="unbookClass(userStore.userBookings.find(b => b.class_id === cls.id).booking_id)">
