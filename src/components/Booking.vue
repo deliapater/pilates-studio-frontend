@@ -3,17 +3,19 @@
         <h2>Book a Class</h2>
         <div>
             <div v-for="cls in classesStore.classes" :key="cls.id">
+                <ClassCard v-if="cls" :className="cls.className" :instructor="cls.instructor" :day="cls.day"
+                    :time="cls.time" :spots="cls.spots" :showSpots="true" />
 
-                <ClassCard v-if="cls" :className="cls.className" :instructor="cls.instructor" :day="cls.day" :time="cls.time"
-                    :spots="cls.spots" :showSpots="true" />
-                <button v-if="userStore.userBookings.find(b => b.class_id === cls.id)"
-                    @click="unbookClass(userStore.userBookings.find(b => b.class_id === cls.id).booking_id)">
+                <button v-if="bookingsMap[cls.id]" @click="unbookClass(bookingsMap[cls.id])">
                     Unbook
                 </button>
-                <button v-else @click="bookClass(cls.id)" :disabled="cls.spots <= 0">
+
+                <button v-else @click="bookClass(cls.id)" :disabled="cls.spots <= 0 || isBooking">
                     {{ cls.spots > 0 ? 'Book Now' : 'Full' }}
                 </button>
+
             </div>
+
         </div>
         <Toast />
     </div>
@@ -30,6 +32,7 @@ import { useSpinnerStore } from '../stores/spinnerStore'
 import { ref } from 'vue'
 import api from "../services/api";
 import { onMounted } from "vue";
+import { computed } from 'vue';
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -41,74 +44,78 @@ const isBooking = ref(false)
 
 onMounted(async () => {
     await classesStore.fetchClasses();
+    if (userStore.token) {
+        await userStore.fetchUserBookings();
+    }
 });
 
+const bookingsMap = computed(() => {
+    const map = {};
+    userStore.userBookings.forEach(b => {
+        map[b.class_id] = b.id;
+    });
+    return map;
+});
 
-const bookClass = async (classId) => {
-    if (!userStore.token) {
-        toastStore.showToast('⚠️ You must be logged in to book a class', "error")
-        router.push('/login')
-        return
-    }
-
-    if (isBooking.value) return;
-    isBooking.value = true;
-    spinner.showSpinner('Booking your class...');
-
-    try {
-        const res = await api.post(
-            "/bookings",
-            { class_id: classId },
-            {
-                headers: {
-                    Authorization: `Bearer ${userStore.token}`,
-                },
-            }
-        );
-        toastStore.showToast("✅ Class booked successfully!", "success");
-
-        const bookedClass = classesStore.classes.find((c) => c.id === classId);
-        if (bookedClass && bookedClass.spots > 0) {
-            bookedClass.spots--;
-        }
-    } catch (err) {
-        if (err.response?.status === 409) {
-            toastStore.showToast("⚠️ You already booked this class", "error");
-        } else if (err.response?.status === 401) {
-            toastStore.showToast("❌ Unauthorized. Please login again.", "error");
-        } else {
-            toastStore.showToast("⚠️ Something went wrong", "error");
-        }
-    } finally {
-        spinner.hideSpinner();
-        isBooking.value = false;
-        await classesStore.fetchClasses();
-    }
-
+function getBookingId(classId) {
+    const booking = userStore.userBookings.find(b => b.class_id === classId);
+    return booking?.id ?? null;
 }
 
-const unbookClass = async (bookingId) => {
-    if (!userStore.token) {
-        toastStore.showToast('⚠️ You must be logged in', 'error');
-        router.push('/login');
+const bookClass = async (classId) => {
+    if (!userStore.token) return;
+
+    if (isBooking.value) return;
+    if (bookingsMap.value[classId]) {
+        toastStore.showToast("⚠️ You already booked this class", "error");
         return;
     }
 
+    isBooking.value = true;
+
     try {
-        await api.delete(`bookings/${bookingId}`, {
-            headers: {
-                Authorization: `Bearer ${userStore.token}`,
-            },
-        });
-        toastStore.showToast('✅ Class unbooked successfully', 'success');
-        userStore.userBookings = userStore.userBookings.filter(
-            (b) => b.id !== bookingId
+        const res = await api.post(
+            '/bookings',
+            { class_id: classId },
+            { headers: { Authorization: `Bearer ${userStore.token}` } }
         );
 
-        await userStore.fetchUserBookings();
-    } catch (err) {
-        toastStore.showToast('⚠️ Something went wrong', 'error')
-    }
+        userStore.userBookings.push({
+            id: res.data.id,
+            class_id: classId
+        });
 
-}
+        const cls = classesStore.classes.find(c => c.id === classId);
+        if (cls) cls.spots--;
+
+    } catch (err) {
+        toastStore.showToast('⚠️ Something went wrong', 'error');
+    } finally {
+        isBooking.value = false;
+    }
+};
+
+
+
+const unbookClass = async (bookingId) => {
+    if (!bookingId || !userStore.token) return;
+
+    try {
+        await api.delete(`/bookings/${bookingId}`, {
+            headers: { Authorization: `Bearer ${userStore.token}` },
+        });
+        const index = userStore.userBookings.findIndex(b => b.id === bookingId);
+        if (index !== -1) {
+            const classId = userStore.userBookings[index].class_id;
+            userStore.userBookings.splice(index, 1);
+
+            const cls = classesStore.classes.find(c => c.id === classId);
+            if (cls) cls.spots++;
+        }
+
+    } catch (err) {
+        toastStore.showToast('⚠️ Something went wrong', 'error');
+    }
+};
+
 </script>
