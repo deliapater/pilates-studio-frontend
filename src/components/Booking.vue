@@ -57,11 +57,6 @@ const bookingsMap = computed(() => {
     return map;
 });
 
-function getBookingId(classId) {
-    const booking = userStore.userBookings.find(b => b.class_id === classId);
-    return booking?.id ?? null;
-}
-
 const bookClass = async (classId) => {
     if (!userStore.token) return;
 
