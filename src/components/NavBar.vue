@@ -2,7 +2,6 @@
     <nav class="nav-bar">
         <div class="links">
             <router-link to="/">Home</router-link>
-            <router-link to="/schedule">Schedule</router-link>
             <router-link to="/bookings">Bookings</router-link>
         </div>
         <div v-if="userStore.token" class="logout">
