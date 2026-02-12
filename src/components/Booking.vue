@@ -9,7 +9,6 @@
           <ClassCard
             :className="cls.className || 'TBD'"
             :instructor="cls.instructor || 'TBD'"
-            :day="day"
             :time="cls.time || 'TBD'"
             :spots="cls.spots ?? 0"
             :showSpots="true"

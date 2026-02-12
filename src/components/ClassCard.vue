@@ -2,7 +2,6 @@
   <div>
     <h2>{{ className || 'No class name' }}</h2>
     <p>Instructor: {{ instructor || 'TBD' }}</p>
-    <p>Day: {{ day || 'TBD' }}</p>
     <p>Time: {{ time || 'TBD' }}</p>
     <p v-if="showSpots && spots !== null">Spots Available: {{ spots }}</p>
   </div>
