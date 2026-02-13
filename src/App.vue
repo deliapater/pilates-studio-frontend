@@ -11,7 +11,7 @@
     </header>
 
     <main>
-      <div>
+      <div class="main-content">
         <LoadingSpinner v-if="spinner.isLoading" />
         <div v-else>
           <router-view />
@@ -55,67 +55,20 @@ onMounted(() => {
 
 <style scoped>
 .app-container {
-  font-family: "Helvetica Neue", sans-serif;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  background-color: #f8f8f8;
+}
+.main-content {
+  flex: 1;  
+  display: flex;
+  flex-direction: column;
+  align-items: center;      
+  justify-content: flex-start; 
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;  
   padding: 1rem;
-}
-
-header {
-  background-color: #333;
-  color: #fff;
-  padding: 2rem 1rem;
-  border-radius: 12px;
-  margin-bottom: 2rem;
-}
-
-header h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-header p {
-  font-size: 1rem;
-  margin-bottom: 1rem;
-}
-
-main {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-footer {
-  margin-top: 2rem;
-  color: #888;
-}
-
-@media (min-width: 600px) {
-  header h1 {
-    font-size: 2.5rem;
-  }
-
-  header p {
-    font-size: 1.25rem;
-  }
-
-  main {
-    padding: 0 2rem;
-  }
-}
-
-@media (min-width: 900px) {
-  header {
-    padding: 3rem 2rem;
-  }
-
-  header h1 {
-    font-size: 3rem;
-  }
-
-  header p {
-    font-size: 1.5rem;
-  }
+  box-sizing: border-box;
 }
 </style>

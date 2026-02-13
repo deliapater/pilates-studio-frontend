@@ -32,6 +32,9 @@ const isBooked = computed(() => {
 })
 </script>
 <style scoped>
+.card {
+  padding: 2em;
+}
 div {
   padding: 1rem;
   border: 1px solid #ccc;
